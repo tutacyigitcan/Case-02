@@ -1,19 +1,15 @@
 using UnityEngine;
 public class EffectManager : MonoBehaviour
 {
-   [SerializeField] private ParticleSystem dustTrailEffect;
+   [SerializeField] private ParticleSystem landingEffect;
 
-   public void PlayDustTrailEffect(bool play)
+   public void PlayLandingEffect()
    {
-      if(dustTrailEffect == null) return;
-
-      if (play && !dustTrailEffect.isPlaying)
-      {
-         dustTrailEffect.Play();
-      }
-      else if (!play && dustTrailEffect.isPlaying)
-      {
-         dustTrailEffect.Stop();
-      }
+      if (landingEffect == null) return;
+      
+      landingEffect.transform.position = transform.position;
+      landingEffect.Stop();
+      landingEffect.Play();
+      Debug.Log("Landing effect played!");
    }
 }

@@ -10,29 +10,31 @@ public class PlayerController : CharacterBase
     [SerializeField] private  AnimatorManager animatorManager;
     [SerializeField] private GroundCheck groundCheck;
     [SerializeField] private EffectManager effectManager;
+
+    private HealthManager healthManager;
     
     private float horizontalInput;
     private bool isSprinting;
     private bool isGrounded;
     private bool isJumping;
+    private bool wasGrounded;
+    private bool isAlive = true;
     
     protected override void Start()
     {
         base.Start();
         isJumping = false;
+        healthManager = GetComponent<HealthManager>();
     }
 
     private void Update()
     {
-        GetInput();
-        HandleInput();
-        isGrounded = groundCheck.IsGrounded();
-        if (isGrounded && isJumping)
+        if (isAlive)
         {
-            effectManager.PlayDustTrailEffect(true);
-            isJumping = false;
-            animatorManager.SetIdleAnimation();
+            GetInput();
+            HandleInput();
         }
+        isGrounded = groundCheck.IsGrounded();
         
         if (isGrounded)
         {
@@ -45,6 +47,13 @@ public class PlayerController : CharacterBase
             rb.velocity.y,
             isGrounded,
             isSprinting);
+        
+        if (isGrounded && isJumping)
+        {
+            effectManager.PlayLandingEffect();
+            isJumping = false;
+            animatorManager.SetIdleAnimation();
+        }
     }
 
     public void HandleInput()
@@ -108,5 +117,14 @@ public class PlayerController : CharacterBase
         }
     }
     
+    private void Die()
+    {
+        isAlive = false;
+        rb.velocity = Vector2.zero;
+    }
     
+    public void Revive()
+    {
+        isAlive = true;
+    }
 }
