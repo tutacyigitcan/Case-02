@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class PlayerData
 {
-    public int currentLives;
+    //public int currentLives;
     public int coins;
     public float[] position;
     public int storyProgress;

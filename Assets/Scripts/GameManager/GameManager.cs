@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
     public void UpdateLives(int newLives)
     {
         Health = newLives; // Can bilgisini güncelle
+        SavePlayerData();
         Debug.Log("GameManager: CurrentLives güncellendi: " + Health);
     }
     
@@ -151,7 +152,7 @@ public class GameManager : MonoBehaviour
         if (data != null)
         {
             PlayerPosition = new Vector3(data.position[0], data.position[1], data.position[2]);
-            Health = data.currentLives;
+            Health = data.health;
             Inventory = new List<string>(data.inventory);
             StoryProgress = data.storyProgress;
 
@@ -204,13 +205,14 @@ public class GameManager : MonoBehaviour
         if (data != null)
         {
             PlayerPosition = new Vector3(data.position[0], data.position[1], data.position[2]);
-            Health = data.currentLives;
+            Health = data.health;
             Inventory = new List<string>(data.inventory);
             StoryProgress = data.storyProgress;
         }
         else
         {
             Debug.LogWarning("Kaydedilmiş veri bulunamadı.");
+            Debug.Log("Checkpoint yüklendi. Can: " + data.health);
         }
     }
     

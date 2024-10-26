@@ -18,6 +18,7 @@ public class HealthManager : MonoBehaviour
             {
                 health = value;
                 UIManager.Instance.UpdateHearts(health); // UI'yi güncelle
+                Debug.Log($"HealthManager - Can güncellendi: {health}");
             }
         }
     }
@@ -114,7 +115,7 @@ public class HealthManager : MonoBehaviour
         yield return new WaitForSeconds(2f);  // 2 saniye bekle
 
         GameManager.Instance.LoadLastCheckpoint("LastCheckpoint");  // Son checkpoint'e ışınla
-        Health = maxLives;  // Canı sıfırla
+        Health = GameManager.Instance.Health;
         isDead = false;  // Ölü durumunu sıfırla
         canTakeDamage = true;  // Yeniden hasar alabilir hale getir
         Debug.Log("Oyuncu yeniden doğdu.");
