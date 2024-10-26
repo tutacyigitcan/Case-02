@@ -11,8 +11,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private List<Image> heartIcons;
     
     [SerializeField] private Text checkpointNotification;
-    [SerializeField] private Transform saveFileListParent;
-    [SerializeField] private GameObject saveFileButtonPrefab;
+    public Transform saveFileListParent;
+    public GameObject saveFileButtonPrefab;
     
     private HealthManager healthManager;
 

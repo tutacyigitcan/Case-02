@@ -3617,7 +3617,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 1.779911, y: 1.1270118}
+  m_Offset: {x: 1.9123993, y: 0.68279004}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -3628,7 +3628,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3.8502426, y: 4.2178125}
+  m_Size: {x: 2.4318504, y: 3.329369}
   m_EdgeRadius: 0
 --- !u!114 &1434345873
 MonoBehaviour:
@@ -3642,7 +3642,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ecf13b1c0d27cf40a52b529267efcf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: Level 02
+  sceneToLoad: GameScene 02
 --- !u!1 &1441571373
 GameObject:
   m_ObjectHideFlags: 0
@@ -3964,10 +3964,12 @@ MonoBehaviour:
   canvasPrefab: {fileID: 1749133405506323469, guid: ff26572762e1b964daf99074c1d88769, type: 3}
   playerPrefab: {fileID: 5435279757555947748, guid: caeca1f5e3fe98a47ab26c5e953a39fa, type: 3}
   cameraPrefab: {fileID: 432588797262390353, guid: 78033d29657e2ce488154521bb57f11a, type: 3}
+  playerInstance: {fileID: 0}
   respawnPoint: {fileID: 0}
   maxLives: 5
   Health: 5
   PlayerPosition: {x: 0, y: 0, z: 0}
+  SceneName: MainMenu
 --- !u!4 &1618587225
 Transform:
   m_ObjectHideFlags: 0
@@ -18864,6 +18866,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 352682906, guid: ff26572762e1b964daf99074c1d88769, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 644061110, guid: ff26572762e1b964daf99074c1d88769, type: 3}
       propertyPath: m_IsActive
       value: 0

@@ -7,6 +7,6 @@ public class TriggerHandler : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        SceneManagement.Instance.LoadScene(sceneToLoad);
+        GameManager.Instance.LoadScene(sceneToLoad);
     }
 }

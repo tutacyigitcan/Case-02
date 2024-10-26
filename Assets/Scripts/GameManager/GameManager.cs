@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,20 +16,19 @@ public class GameManager : MonoBehaviour
     public GameObject playerInstance;
     private GameObject cameraInstance;
     private GameObject canvasInstance;
-    
+
     public Transform respawnPoint;
     private Transform currentCheckpoint;
-    private Transform lastCheckpoint;
-    
     private Dictionary<int, List<Transform>> respawnPointsByScene = new Dictionary<int, List<Transform>>();
 
-    [Header("Player Data")] 
+    [Header("Player Data")]
     public int maxLives = 5;
     public int Health;
     public Vector3 PlayerPosition = Vector3.zero;
     public List<string> Inventory { get; private set; } = new List<string>();
     public int StoryProgress { get; private set; } = 0;
 
+    public string SceneName = "MainMenu";
 
     private void Awake()
     {
@@ -36,53 +36,81 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            InstantiateEssentialPrefabs();
-            LoadPlayerData();
-            InitializePlayerData();
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
             Destroy(gameObject);
         }
     }
-    
-    private void InitializePlayerData()
+
+    private void OnDestroy()
     {
-        Health = (Health > 0) ? Health : maxLives;
-        Debug.Log($"Başlangıç Canı: {Health}");
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
     
     public void UpdateLives(int newLives)
     {
-        Health = newLives; // Can bilgisini güncelle
-        SavePlayerData();
-        Debug.Log("GameManager: CurrentLives güncellendi: " + Health);
+        Health = newLives;
+        SavePlayerData();  // Oyuncu verisini kaydet
+        Debug.Log("GameManager: Can güncellendi: " + Health);
     }
     
-    // Gerekli prefabs'ları sahneye ekle
+
+    // Sahne yüklendiğinde çağrılır
+    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name != "MainMenu")
+        {
+            Debug.Log($"Sahne yüklendi: {scene.name}");
+            InstantiateEssentialPrefabs();  // Gerekli prefabları oluştur
+
+            // Checkpoint veya varsayılan pozisyondan başlat
+            bool success = LoadLastCheckpoint("LastCheckpoint");
+
+            if (!success)
+            {
+                Debug.LogWarning("Checkpoint bulunamadı, varsayılan pozisyonda başlatılıyor.");
+                playerInstance.transform.position = Vector3.zero;
+            }
+        }
+    }
+
+    // Oyuncu, canvas ve kamera prefablarını yaratır
     private void InstantiateEssentialPrefabs()
     {
         if (canvasPrefab != null && canvasInstance == null)
         {
-            canvasInstance = Instantiate(canvasPrefab); 
+            canvasInstance = Instantiate(canvasPrefab);
             DontDestroyOnLoad(canvasInstance);
         }
 
         if (cameraPrefab != null && cameraInstance == null)
         {
-            cameraInstance = Instantiate(cameraPrefab); 
+            cameraInstance = Instantiate(cameraPrefab);
             DontDestroyOnLoad(cameraInstance);
         }
 
         if (playerPrefab != null && playerInstance == null)
         {
-            playerInstance = Instantiate(playerPrefab); 
+            playerInstance = Instantiate(playerPrefab);
             DontDestroyOnLoad(playerInstance);
+            Debug.Log("Player yaratıldı: " + playerInstance.name);
         }
     }
     
     public void RespawnPlayer()
     {
+        if (playerInstance != null && currentCheckpoint != null)
+        {
+            playerInstance.transform.position = currentCheckpoint.position;
+            Debug.Log("Oyuncu checkpoint'ten doğdu.");
+        }
+        else
+        {
+            Debug.LogWarning("Checkpoint veya oyuncu nesnesi bulunamadı!");
+        }
+        
         if (currentCheckpoint != null)  // Eğer checkpoint varsa buradan başla
         {
             playerInstance.transform.position = currentCheckpoint.position;
@@ -100,6 +128,25 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Sahne geçişini başlat
+    public void LoadScene(string sceneName)
+    {
+        StartCoroutine(HandleSceneTransition(sceneName));
+    }
+
+    // Sahne geçişini asenkron olarak yönetir
+    private IEnumerator HandleSceneTransition(string sceneName)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(0.1f);  // Yükleme sonrası kısa bekleme
+        InitializePlayer();  // Oyuncuyu doğru konuma yerleştir
+    }
+    
     public Transform GetRespawnPointForCurrentScene()
     {
         int sceneIndex = SceneManager.GetActiveScene().buildIndex;
@@ -115,66 +162,37 @@ public class GameManager : MonoBehaviour
             return null;
         }
     }
-    
-    // Yeni respawn point ata
-    public void SetRespawnPoint(Transform newRespawnPoint)
-    {
-        respawnPoint = newRespawnPoint;
-    }
-    
-    // Yeni checkpoint ata ve oyuncu verilerini kaydet
-    public void SetCurrentCheckpoint(Transform checkpoint)
-    {
-        currentCheckpoint = checkpoint;
-       // SaveCheckpointData(); // Veriyi kaydet
-       PlayerPosition = checkpoint.position;
-       
-       SaveSystem.SaveCheckpoint("LastCheckpoint", PlayerPosition, Health, Inventory, StoryProgress);
-       Debug.Log($"Checkpoint kaydedildi! Konum: {PlayerPosition}, Can: {Health}");
-    }
-    
-    private void SaveCheckpointData()
-    {
-        PlayerPosition = currentCheckpoint.position;
-        SaveSystem.SaveCheckpoint("LastCheckpoint", PlayerPosition, Health, Inventory, StoryProgress);
-    }
-    
-    public void SetLastCheckpoint(Transform checkpoint)
-    {
-        lastCheckpoint = checkpoint;
-        Debug.Log($"GameManager: Checkpoint kaydedildi: {checkpoint.name}");
-    }
-    
-    public Transform GetLastCheckpoint()
-    {
-        return lastCheckpoint;
-    }
-    
-    // Checkpoint'ten yükleme yap
+
+    // Son checkpoint'i yükler
     public bool LoadLastCheckpoint(string checkpointName)
     {
-        PlayerData data = SaveSystem.LoadCheckpoint("checkpointName");
-        if (data != null)
+        PlayerData data = SaveSystem.LoadCheckpoint(checkpointName);
+        if (data != null && playerInstance != null)
         {
             PlayerPosition = new Vector3(data.position[0], data.position[1], data.position[2]);
             Health = data.health;
             Inventory = new List<string>(data.inventory);
             StoryProgress = data.storyProgress;
 
-            InitializePlayer(); // Oyuncuyu pozisyona yerleştir
-            Debug.Log($"Checkpoint yüklendi: {checkpointName}, Can: {Health}");
+            playerInstance.transform.position = PlayerPosition;
+            Debug.Log($"Checkpoint'ten yüklendi: {checkpointName}, Pozisyon: {PlayerPosition}");
             return true;
         }
-        else
-        {
-            Debug.LogWarning("Kaydedilmiş checkpoint bulunamadı: " + checkpointName);
-            return false;
-        }
+        return false;
     }
-    
-    
-    
-    // Oyuncuyu başlangıçta veya checkpoint'ten başlat
+
+    // Yeni checkpoint'i kaydeder
+    public void SetCurrentCheckpoint(Transform checkpoint)
+    {
+        currentCheckpoint = checkpoint;
+        PlayerPosition = checkpoint.position;
+        SceneName = SceneManager.GetActiveScene().name;
+
+        SaveSystem.SaveCheckpoint("LastCheckpoint", SceneName, PlayerPosition, Health, Inventory, StoryProgress);
+        Debug.Log($"Checkpoint kaydedildi! Pozisyon: {PlayerPosition}");
+    }
+
+    // Oyuncuyu başlatır veya checkpoint'e yerleştirir
     public void InitializePlayer()
     {
         if (playerInstance == null)
@@ -186,27 +204,31 @@ public class GameManager : MonoBehaviour
         if (currentCheckpoint != null)
         {
             playerInstance.transform.position = currentCheckpoint.position;
+            Debug.Log("Oyuncu checkpoint'ten doğdu.");
         }
         else if (respawnPoint != null)
         {
             playerInstance.transform.position = respawnPoint.position;
+            Debug.Log("Oyuncu respawn noktasından doğdu.");
         }
         else
         {
-            playerInstance.transform.position = Vector3.zero; // Başlangıç pozisyonu
+            playerInstance.transform.position = Vector3.zero;
+            Debug.LogWarning("Checkpoint veya respawn noktası bulunamadı.");
         }
     }
     
-    // Oyuncu verilerini kaydet
+    
+    // Oyuncu verilerini kaydeder
     public void SavePlayerData()
     {
-        SaveSystem.SaveCheckpoint("LastSave",PlayerPosition, Health, Inventory, StoryProgress);
+        SaveSystem.SaveCheckpoint("LastCheckPoint", SceneName, PlayerPosition, Health, Inventory, StoryProgress);
     }
-    
-    // Oyuncu verilerini yükle
+
+    // Oyuncu verilerini yükler
     public void LoadPlayerData()
     {
-        PlayerData data = SaveSystem.LoadCheckpoint("LastSave");
+        PlayerData data = SaveSystem.LoadCheckpoint("LastCheckPoint");
         if (data != null)
         {
             PlayerPosition = new Vector3(data.position[0], data.position[1], data.position[2]);
@@ -216,22 +238,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Kaydedilmiş veri bulunamadı.");
-            Debug.Log("Checkpoint yüklendi. Can: " + data.health);
+            Debug.LogWarning("Oyuncu verisi yüklenemedi.");
         }
-    }
-    
-    // Envantere yeni bir eşya ekle
-    public void AddItemToInventory(string item)
-    {
-        Inventory.Add(item);
-        Debug.Log(item + " envantere eklendi.");
-    }
-
-    // Hikaye ilerlemesini güncelle
-    public void UpdateStoryProgress(int progress)
-    {
-        StoryProgress = progress;
-        Debug.Log("Hikaye ilerlemesi: " + progress);
     }
 }

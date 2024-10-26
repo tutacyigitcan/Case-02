@@ -6,19 +6,23 @@ public static class SaveSystem
 {
     private static string saveFolder = Application.persistentDataPath + "/Saves/";
 
-    public static void SaveCheckpoint(string checkpointName, Vector3 position,int health, List<string> inventory,
-        int storyProgress)
+    public static void SaveCheckpoint(
+        string checkpointName, string sceneName, Vector3 position, int health,
+        List<string> inventory, int storyProgress)
     {
         if (!Directory.Exists(saveFolder))
         {
-            Directory.CreateDirectory(saveFolder); // Klasör yoksa oluştur
+            Directory.CreateDirectory(saveFolder);
         }
 
-        PlayerData data = new PlayerData(position, health, inventory, storyProgress);
-        string json = JsonUtility.ToJson(data, true);
+        string filePath = saveFolder + checkpointName + ".json";
 
-        File.WriteAllText(saveFolder + checkpointName + ".json", json);
-        Debug.Log($"Checkpoint kaydedildi: {checkpointName}, Can: {health}");
+        
+        PlayerData data = new PlayerData(sceneName, position, health, inventory, storyProgress);
+        string json = JsonUtility.ToJson(data, true);
+        File.WriteAllText(filePath, json);
+
+        Debug.Log($"Checkpoint kaydedildi: {checkpointName}, Konum: {position}");
     }
     
     // Save dosyasını yükle
@@ -29,12 +33,12 @@ public static class SaveSystem
         {
             string json = File.ReadAllText(path);
             PlayerData data = JsonUtility.FromJson<PlayerData>(json);
-            // Geçersiz sağlık değerleri için kontrol ekleyin
-            if (data.health <= 0)
+            
+            if (data == null)
             {
-                data.health = 5;  // Negatif sağlık durumunda sıfırla
-                Debug.LogWarning("Sağlık değeri geçersiz! 0 olarak ayarlandı.");
-            } 
+                Debug.LogError("Checkpoint verisi okunamadı!");
+                return null;
+            }
             Debug.Log($"Checkpoint yüklendi: {checkpointName}, Can: {data.health}");
             return data;
         }
@@ -58,7 +62,24 @@ public static class SaveSystem
         {
             saveFiles.Add(Path.GetFileNameWithoutExtension(file));
         }
-
+        Debug.Log($"Toplam {saveFiles.Count} kayıtlı dosya bulundu.");
         return saveFiles;
+    }
+    
+    public static void DeleteAllSaves()
+    {
+        if (Directory.Exists(saveFolder))
+        {
+            string[] files = Directory.GetFiles(saveFolder);
+            foreach (string file in files)
+            {
+                File.Delete(file);  // Dosyaları sil
+            }
+            Debug.Log("Tüm kayıt dosyaları başarıyla silindi.");
+        }
+        else
+        {
+            Debug.LogWarning("Kayıt klasörü bulunamadı.");
+        }
     }
 }

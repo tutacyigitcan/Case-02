@@ -147,7 +147,7 @@ public class HealthManager : MonoBehaviour
         anim.SetTrigger("Die");
         yield return new WaitForSeconds(2f);
         Debug.Log("Oyun bitti. Ana menüye dönüyor.");
-        SceneManagement.Instance.LoadScene("MainMenu");
+        GameManager.Instance.LoadScene("MainMenu");
         // Ana menüye yönlendirme veya oyunu yeniden başlatma işlemi burada yapılabilir.
     }
     

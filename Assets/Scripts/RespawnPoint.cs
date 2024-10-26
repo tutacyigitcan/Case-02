@@ -7,7 +7,7 @@ public class RespawnPoint : MonoBehaviour
     {
         if (SceneManager.GetActiveScene().buildIndex == 0) // Başlangıç sahnesi için
         {
-            GameManager.Instance.SetRespawnPoint(transform);
+            //GameManager.Instance.SetRespawnPoint(transform);
         }
     }
 }
