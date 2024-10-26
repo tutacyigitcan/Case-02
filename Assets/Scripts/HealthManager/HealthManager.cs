@@ -68,7 +68,7 @@ public class HealthManager : MonoBehaviour
         else
         {
             // UI'de can göstergesini güncelle
-            UIManager.Instance.UpdateHearts(Health);
+           // UIManager.Instance.UpdateHearts(Health);
             StartCoroutine(HandleRespawn());
         }
         
@@ -114,8 +114,10 @@ public class HealthManager : MonoBehaviour
 
         yield return new WaitForSeconds(2f);  // 2 saniye bekle
 
-        GameManager.Instance.LoadLastCheckpoint("LastCheckpoint");  // Son checkpoint'e ışınla
-        Health = GameManager.Instance.Health;
+        //GameManager.Instance.LoadLastCheckpoint("LastCheckpoint");  // Son checkpoint'e ışınla
+         GameManager.Instance.RespawnPlayer();
+       
+      //  Health = GameManager.Instance.Health;
         isDead = false;  // Ölü durumunu sıfırla
         canTakeDamage = true;  // Yeniden hasar alabilir hale getir
         Debug.Log("Oyuncu yeniden doğdu.");
@@ -145,6 +147,7 @@ public class HealthManager : MonoBehaviour
         anim.SetTrigger("Die");
         yield return new WaitForSeconds(2f);
         Debug.Log("Oyun bitti. Ana menüye dönüyor.");
+        SceneManagement.Instance.LoadScene("MainMenu");
         // Ana menüye yönlendirme veya oyunu yeniden başlatma işlemi burada yapılabilir.
     }
     

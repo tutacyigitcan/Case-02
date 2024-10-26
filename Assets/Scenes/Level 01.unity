@@ -963,7 +963,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 966553625}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.8731236
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1590,11 +1590,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5148400121225345273, guid: 473996f4756f0534899c41e816755b61, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 14.94
+      value: 53.97
       objectReference: {fileID: 0}
     - target: {fileID: 5148400121225345273, guid: 473996f4756f0534899c41e816755b61, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.66
+      value: 4.55
       objectReference: {fileID: 0}
     - target: {fileID: 5148400121225345273, guid: 473996f4756f0534899c41e816755b61, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2053,7 +2053,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.8731236}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2919,7 +2919,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 23.862381}
+  m_AnchoredPosition: {x: 0, y: 0.0010305692}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1322044096
@@ -18805,11 +18805,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5148400121225345273, guid: 473996f4756f0534899c41e816755b61, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.6
+      value: 28.24
       objectReference: {fileID: 0}
     - target: {fileID: 5148400121225345273, guid: 473996f4756f0534899c41e816755b61, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.7
+      value: 4.98
       objectReference: {fileID: 0}
     - target: {fileID: 5148400121225345273, guid: 473996f4756f0534899c41e816755b61, type: 3}
       propertyPath: m_LocalPosition.z
@@ -18864,6 +18864,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 644061110, guid: ff26572762e1b964daf99074c1d88769, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1749133405506323457, guid: ff26572762e1b964daf99074c1d88769, type: 3}
       propertyPath: m_Pivot.x
       value: 0

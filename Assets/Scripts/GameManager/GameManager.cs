@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject cameraPrefab;
 
-    private GameObject playerInstance;
+    public GameObject playerInstance;
     private GameObject cameraInstance;
     private GameObject canvasInstance;
     
@@ -48,7 +48,8 @@ public class GameManager : MonoBehaviour
     
     private void InitializePlayerData()
     {
-        Health = maxLives;
+        Health = (Health > 0) ? Health : maxLives;
+        Debug.Log($"Başlangıç Canı: {Health}");
     }
     
     public void UpdateLives(int newLives)
@@ -82,20 +83,20 @@ public class GameManager : MonoBehaviour
     
     public void RespawnPlayer()
     {
-        if (currentCheckpoint != null) // En son checkpoint'ten başla
+        if (currentCheckpoint != null)  // Eğer checkpoint varsa buradan başla
         {
             playerInstance.transform.position = currentCheckpoint.position;
             Debug.Log("Oyuncu checkpoint'ten doğdu.");
         }
-        else if (respawnPoint != null) // Eğer checkpoint yoksa respawn point'ten başla
+        else if (respawnPoint != null)  // Checkpoint yoksa respawn noktasından başla
         {
             playerInstance.transform.position = respawnPoint.position;
-            Debug.Log("Oyuncu respawn point'ten doğdu.");
+            Debug.Log("Oyuncu respawn noktasından doğdu.");
         }
         else
         {
-            playerInstance.transform.position = Vector3.zero;
-            Debug.LogWarning("Respawn veya checkpoint bulunamadı, başlangıç noktasına döndü.");
+            playerInstance.transform.position = Vector3.zero;  // Başlangıç pozisyonuna dön
+            Debug.LogWarning("Respawn veya checkpoint bulunamadı. Başlangıç pozisyonuna döndü.");
         }
     }
 
@@ -116,16 +117,20 @@ public class GameManager : MonoBehaviour
     }
     
     // Yeni respawn point ata
-    public void SetRespawnPoint(Transform point)
+    public void SetRespawnPoint(Transform newRespawnPoint)
     {
-        respawnPoint = point;
+        respawnPoint = newRespawnPoint;
     }
     
     // Yeni checkpoint ata ve oyuncu verilerini kaydet
     public void SetCurrentCheckpoint(Transform checkpoint)
     {
         currentCheckpoint = checkpoint;
-        SaveCheckpointData(); // Veriyi kaydet
+       // SaveCheckpointData(); // Veriyi kaydet
+       PlayerPosition = checkpoint.position;
+       
+       SaveSystem.SaveCheckpoint("LastCheckpoint", PlayerPosition, Health, Inventory, StoryProgress);
+       Debug.Log($"Checkpoint kaydedildi! Konum: {PlayerPosition}, Can: {Health}");
     }
     
     private void SaveCheckpointData()
@@ -148,7 +153,7 @@ public class GameManager : MonoBehaviour
     // Checkpoint'ten yükleme yap
     public bool LoadLastCheckpoint(string checkpointName)
     {
-        PlayerData data = SaveSystem.LoadCheckpoint("LastCheckpoint");
+        PlayerData data = SaveSystem.LoadCheckpoint("checkpointName");
         if (data != null)
         {
             PlayerPosition = new Vector3(data.position[0], data.position[1], data.position[2]);
@@ -157,7 +162,7 @@ public class GameManager : MonoBehaviour
             StoryProgress = data.storyProgress;
 
             InitializePlayer(); // Oyuncuyu pozisyona yerleştir
-            Debug.Log("Checkpoint yüklendi: " + checkpointName);
+            Debug.Log($"Checkpoint yüklendi: {checkpointName}, Can: {Health}");
             return true;
         }
         else
@@ -205,7 +210,7 @@ public class GameManager : MonoBehaviour
         if (data != null)
         {
             PlayerPosition = new Vector3(data.position[0], data.position[1], data.position[2]);
-            Health = data.health;
+            Health = data.health > 0 ? data.health : maxLives;
             Inventory = new List<string>(data.inventory);
             StoryProgress = data.storyProgress;
         }

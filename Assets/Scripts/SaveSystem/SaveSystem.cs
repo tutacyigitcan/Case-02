@@ -18,7 +18,7 @@ public static class SaveSystem
         string json = JsonUtility.ToJson(data, true);
 
         File.WriteAllText(saveFolder + checkpointName + ".json", json);
-        Debug.Log("Veriler kaydedildi" + saveFolder + checkpointName + ".json");
+        Debug.Log($"Checkpoint kaydedildi: {checkpointName}, Can: {health}");
     }
     
     // Save dosyasını yükle
@@ -29,7 +29,13 @@ public static class SaveSystem
         {
             string json = File.ReadAllText(path);
             PlayerData data = JsonUtility.FromJson<PlayerData>(json);
-            Debug.Log("Veri yüklendi" + path);
+            // Geçersiz sağlık değerleri için kontrol ekleyin
+            if (data.health <= 0)
+            {
+                data.health = 5;  // Negatif sağlık durumunda sıfırla
+                Debug.LogWarning("Sağlık değeri geçersiz! 0 olarak ayarlandı.");
+            } 
+            Debug.Log($"Checkpoint yüklendi: {checkpointName}, Can: {data.health}");
             return data;
         }
         else
