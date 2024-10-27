@@ -50,7 +50,6 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        SetCheckPoints();
         InitializeSceneCheckpoints();
     }
 
@@ -132,6 +131,7 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log($"Sahne yüklendi: {scene.name}");
             InstantiateEssentialPrefabs();  // Gerekli prefabları oluştur
+            SetCheckPoints();
 
             // Checkpoint veya varsayılan pozisyondan başlat
             bool success = LoadLastCheckpoint("LastCheckpoint");
