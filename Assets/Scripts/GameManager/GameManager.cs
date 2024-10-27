@@ -23,7 +23,8 @@ public class GameManager : MonoBehaviour
     
     private Dictionary<string, int> checkpointsPerScene = new Dictionary<string, int>();
     private Dictionary<string, int> passedCheckpointsPerScene = new Dictionary<string, int>();
-
+    private HashSet<string> activatedCheckpoints = new HashSet<string>();
+    
     [Header("Player Data")]
     public int maxLives = 5;
     public int Health;
@@ -249,6 +250,16 @@ public class GameManager : MonoBehaviour
     // Yeni checkpoint'i kaydeder
     public void SetCurrentCheckpoint(Transform checkpoint)
     {
+        string checkpointName = checkpoint.name;
+
+        // Eğer checkpoint zaten aktifse tekrar kaydetme
+        if (activatedCheckpoints.Contains(checkpointName))
+        {
+            Debug.Log($"Checkpoint zaten aktif: {checkpointName}");
+            return;
+        }
+        
+        activatedCheckpoints.Add(checkpointName);
         currentCheckpoint = checkpoint;
         PlayerPosition = checkpoint.position;
         SceneName = SceneManager.GetActiveScene().name;

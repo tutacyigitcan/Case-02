@@ -32,19 +32,12 @@ public static class SaveSystem
         {
             string json = File.ReadAllText(path);
             PlayerData data = JsonUtility.FromJson<PlayerData>(json);
-            Debug.Log(
-                $"Checkpoint yüklendi: {checkpointName}, İlerleme: {data.storyProgress}%, Tarih: {data.saveTime}");
-            if (data == null)
-            {
-                Debug.LogError("Checkpoint verisi okunamadı!");
-                return null;
-            }
             Debug.Log($"Checkpoint yüklendi: {checkpointName}, Can: {data.health}");
             return data;
         }
         else
         {
-            Debug.LogWarning("Kaydedilmiş dosya bulunamadı" + path);
+            Debug.LogWarning("Checkpoint kaydı bulunamadı: " + path);
             return null;
         }
     }
