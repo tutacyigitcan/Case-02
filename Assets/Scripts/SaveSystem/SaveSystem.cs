@@ -16,7 +16,6 @@ public static class SaveSystem
         }
 
         string filePath = saveFolder + checkpointName + ".json";
-
         
         PlayerData data = new PlayerData(sceneName, position, health, inventory, storyProgress);
         string json = JsonUtility.ToJson(data, true);
@@ -33,7 +32,8 @@ public static class SaveSystem
         {
             string json = File.ReadAllText(path);
             PlayerData data = JsonUtility.FromJson<PlayerData>(json);
-            
+            Debug.Log(
+                $"Checkpoint yüklendi: {checkpointName}, İlerleme: {data.storyProgress}%, Tarih: {data.saveTime}");
             if (data == null)
             {
                 Debug.LogError("Checkpoint verisi okunamadı!");

@@ -20,6 +20,9 @@ public class GameManager : MonoBehaviour
     public Transform respawnPoint;
     private Transform currentCheckpoint;
     private Dictionary<int, List<Transform>> respawnPointsByScene = new Dictionary<int, List<Transform>>();
+    
+    private Dictionary<string, int> checkpointsPerScene = new Dictionary<string, int>();
+    private Dictionary<string, int> passedCheckpointsPerScene = new Dictionary<string, int>();
 
     [Header("Player Data")]
     public int maxLives = 5;
@@ -42,6 +45,8 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        
+        InitializeSceneCheckpoints();
     }
 
     private void OnDestroy()
@@ -55,6 +60,66 @@ public class GameManager : MonoBehaviour
         SavePlayerData();  // Oyuncu verisini kaydet
         Debug.Log("GameManager: Can güncellendi: " + Health);
     }
+
+    #region TESTER
+    private void InitializeSceneCheckpoints()
+    {
+        string currentScene = SceneManager.GetActiveScene().name;
+        int totalCheckpoints = GameObject.FindGameObjectsWithTag("Checkpoint").Length;
+
+        if (!checkpointsPerScene.ContainsKey(currentScene))
+        {
+            checkpointsPerScene[currentScene] = totalCheckpoints;
+            passedCheckpointsPerScene[currentScene] = 0;
+        }
+    }
+    
+    public void CheckpointPassed()
+    {
+        string currentScene = SceneManager.GetActiveScene().name;
+        if (passedCheckpointsPerScene.ContainsKey(currentScene))
+        {
+            passedCheckpointsPerScene[currentScene]++;
+            SaveCurrentProgress();
+        }
+    }
+    
+    private void SaveCurrentProgress()
+    {
+        int totalPassed = GetTotalPassedCheckpoints();
+        int totalCheckpoints = GetTotalCheckpoints();
+        int progress = (int)((float)totalPassed / totalCheckpoints * 100);
+
+        SaveSystem.SaveCheckpoint(
+            "LastCheckpoint",
+            SceneManager.GetActiveScene().name,
+            playerInstance.transform.position,
+            Health,
+            Inventory,
+            progress
+        );
+    }
+    
+    private int GetTotalCheckpoints()
+    {
+        int total = 0;
+        foreach (var count in checkpointsPerScene.Values)
+        {
+            total += count;
+        }
+        return total;
+    }
+
+    private int GetTotalPassedCheckpoints()
+    {
+        int total = 0;
+        foreach (var count in passedCheckpointsPerScene.Values)
+        {
+            total += count;
+        }
+        return total;
+    }
+    #endregion
     
 
     // Sahne yüklendiğinde çağrılır

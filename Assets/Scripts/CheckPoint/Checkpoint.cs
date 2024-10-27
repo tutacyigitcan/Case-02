@@ -12,7 +12,7 @@ public class Checkpoint : MonoBehaviour
             Debug.Log("Checkpoint'e ulaşıldı!");
             GameManager.Instance.SetCurrentCheckpoint(transform); // Checkpoint'i ata
             // GameManager.Instance.SaveCheckpoint(checkpointName); // Verileri kaydet
-
+            GameManager.Instance.CheckpointPassed();
             UIManager.Instance.ShowCheckpointNotification();
         }
     }

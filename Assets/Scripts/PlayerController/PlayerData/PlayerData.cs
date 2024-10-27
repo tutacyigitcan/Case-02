@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ public class PlayerData
     public int storyProgress;
     public List<string> inventory;
     public int health;
+    public string saveTime;
     public PlayerData(string sceneName, Vector3 playerPosition, int health, List<string> inventory, int storyProgress)
     {
         this.sceneName = sceneName;
@@ -23,6 +25,7 @@ public class PlayerData
         this.health = health;
         this.inventory = new List<string>(inventory);
         this.storyProgress = storyProgress;
+        this.saveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
     }
 
     #region MyRegion

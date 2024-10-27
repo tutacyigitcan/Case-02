@@ -28,13 +28,29 @@ public class MainMenuUI : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-        
+
+        // Tüm kayıt dosyalarını al
         List<string> saveFiles = SaveSystem.GetAllSaveFiles();
+
         foreach (string saveFile in saveFiles)
         {
-            
+            // Butonu oluştur
             GameObject button = Instantiate(saveFileButtonPrefab, checkpointListParent);
-            button.GetComponentInChildren<Text>().text = saveFile;
+            Text buttonText = button.GetComponentInChildren<Text>();
+
+            // Kayıt dosyasını yükle ve bilgileri yazdır
+            PlayerData data = SaveSystem.LoadCheckpoint(saveFile);
+            if (data != null)
+            {
+                // İlerleme yüzdesini ve kaydetme zamanını göster
+                buttonText.text = $"{saveFile}\nİlerleme: {data.storyProgress}%\nTarih: {data.saveTime}";
+            }
+            else
+            {
+                buttonText.text = $"{saveFile}\nVeri Yüklenemedi!";
+            }
+
+            // Butona tıklama olayı ekle
             button.GetComponent<Button>().onClick.AddListener(() => OnSaveFileClicked(saveFile));
         }
     }
