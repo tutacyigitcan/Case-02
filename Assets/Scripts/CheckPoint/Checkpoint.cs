@@ -14,6 +14,7 @@ public class Checkpoint : MonoBehaviour
             
             UIManager.Instance.ShowCheckpointNotification();
             GetComponent<BoxCollider2D>().enabled = false;
+            GameManager.Instance.AddActiveCheckpoint(transform);
         }
         else
         {

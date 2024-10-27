@@ -142,7 +142,7 @@ public class GameManager : MonoBehaviour
                 playerInstance.transform.position = Vector3.zero;
             }
         }
-        UIManager.Instance.TeleportUI(GetActiveCheckpoints());
+        Debug.Log("Aktif checkpoint sayısı: " + activeCheckpoints.Count);
     }
 
     // Oyuncu, canvas ve kamera prefablarını yaratır

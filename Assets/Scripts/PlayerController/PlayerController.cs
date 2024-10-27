@@ -58,8 +58,9 @@ public class PlayerController : CharacterBase
         
         if (Input.GetKeyDown(KeyCode.C))
         {
+            GameManager.Instance.SetCheckPoints(); // Listeyi yeniden yükle
             List<Transform> activeCheckpoints = GameManager.Instance.GetActiveCheckpoints();
-            UIManager.Instance.TeleportUI(activeCheckpoints); // UI'yi güncelle
+            UIManager.Instance.TeleportUI(activeCheckpoints);
         }
     }
 
