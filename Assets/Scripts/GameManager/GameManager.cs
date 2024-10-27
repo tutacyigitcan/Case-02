@@ -34,6 +34,8 @@ public class GameManager : MonoBehaviour
 
     public string SceneName = "MainMenu";
 
+    public GameObject[] checkpoints;
+
     private void Awake()
     {
         if (Instance == null)
@@ -167,8 +169,21 @@ public class GameManager : MonoBehaviour
     
     public void RespawnPlayer()
     {
+        foreach (var checkpoint in checkpoints)
+        {
+            Debug.Log(checkpoint + "TESTER CHECK");
+            Debug.Log(playerPrefab.transform.position);
+                
+            if (checkpoint.transform.position.x <= currentCheckpoint.position.x)
+            {
+                checkpoint.GetComponent<BoxCollider2D>().enabled = false;
+                Debug.Log(checkpoint + ("girdi"));
+            }
+        }
+        
         if (playerInstance != null && currentCheckpoint != null)
         {
+          
             playerInstance.transform.position = currentCheckpoint.position;
             Debug.Log("Oyuncu checkpoint'ten doğdu.");
         }
@@ -232,9 +247,23 @@ public class GameManager : MonoBehaviour
     // Son checkpoint'i yükler
     public bool LoadLastCheckpoint(string checkpointName)
     {
+        
         PlayerData data = SaveSystem.LoadCheckpoint(checkpointName);
         if (data != null && playerInstance != null)
         {
+            
+            foreach (var checkpoint in checkpoints)
+            {
+                Debug.Log(checkpoint.transform.position + "LoadLastCheckpoint TESTER CHECK");
+                Debug.Log(data.position[0]+"LoadLastCheckpoint TESTER");
+                
+                if (checkpoint.transform.position.x <= data.position[0])
+                {
+                    checkpoint.GetComponent<BoxCollider2D>().enabled = false;
+                    Debug.Log(checkpoint + ("LoadLastCheckpoint girdi"));
+                }
+            }
+            
             PlayerPosition = new Vector3(data.position[0], data.position[1], data.position[2]);
             Health = data.health;
             Inventory = new List<string>(data.inventory);
@@ -271,6 +300,19 @@ public class GameManager : MonoBehaviour
     // Oyuncuyu başlatır veya checkpoint'e yerleştirir
     public void InitializePlayer()
     {
+        Debug.Log(checkpoints+ "TESTER CHECK");
+        foreach (var checkpoint in checkpoints)
+        {
+            
+            Debug.Log(playerPrefab.transform.position);
+                
+            if (checkpoint.transform.position.x <= currentCheckpoint.position.x)
+            {
+                checkpoint.GetComponent<BoxCollider2D>().enabled = false;
+                Debug.Log(checkpoint + ("girdi"));
+            }
+        }
+        
         if (playerInstance == null)
         {
             playerInstance = Instantiate(playerPrefab);
