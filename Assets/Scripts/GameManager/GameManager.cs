@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     private Dictionary<string, int> passedCheckpointsPerScene = new Dictionary<string, int>();
     private HashSet<string> activatedCheckpoints = new HashSet<string>();
     
+    
     [Header("Player Data")]
     public int maxLives = 5;
     public int Health;
@@ -34,7 +35,7 @@ public class GameManager : MonoBehaviour
 
     public string SceneName = "MainMenu";
 
-    public GameObject[] checkpoints;
+    private GameObject[] checkpoints;
 
     private void Awake()
     {
@@ -48,7 +49,7 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        
+        SetCheckPoints();
         InitializeSceneCheckpoints();
     }
 
@@ -60,7 +61,6 @@ public class GameManager : MonoBehaviour
     public void UpdateLives(int newLives)
     {
         Health = newLives;
-        SavePlayerData();  // Oyuncu verisini kaydet
         Debug.Log("GameManager: Can güncellendi: " + Health);
     }
 
@@ -124,7 +124,6 @@ public class GameManager : MonoBehaviour
     }
     #endregion
     
-
     // Sahne yüklendiğinde çağrılır
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
@@ -333,6 +332,35 @@ public class GameManager : MonoBehaviour
         else
         {
             Debug.LogWarning("Oyuncu verisi yüklenemedi.");
+        }
+    }
+    
+    public void SetCheckPoints()
+    {
+        GameObject checkPointContainer = GameObject.Find("CheckPointContainer");
+        if (checkPointContainer != null)
+        {
+            Transform[] children = checkPointContainer.GetComponentsInChildren<Transform>();
+            List<Transform> childList = new List<Transform>();
+            foreach (Transform child in children)
+            {
+                if (child != checkPointContainer.transform)
+                {
+                    childList.Add(child);
+                }
+            }
+
+            childList.Sort((a, b) => a.position.x.CompareTo(b.position.x));
+
+            checkpoints = new GameObject[childList.Count];
+            for (int i = 0; i < childList.Count; i++)
+            {
+                checkpoints[i] = childList[i].gameObject;
+            }
+        }
+        else
+        {
+            Debug.LogError("CheckPointContainer not found!");
         }
     }
 }

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - 'RespawnPoint '
   - Checkpoint
+  - ChekpointContainer
   layers:
   - Default
   - TransparentFX

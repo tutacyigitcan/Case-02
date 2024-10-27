@@ -11,6 +11,7 @@ public class Checkpoint : MonoBehaviour
             Debug.Log($"Checkpoint'e ulaşıldı: {checkpointName}");
             GameManager.Instance.SetCurrentCheckpoint(transform); // Checkpoint'i ata
             GameManager.Instance.CheckpointPassed();
+            
             UIManager.Instance.ShowCheckpointNotification();
             GetComponent<BoxCollider2D>().enabled = false;
         }

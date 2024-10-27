@@ -13,6 +13,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text checkpointNotification;
     public Transform saveFileListParent;
     public GameObject saveFileButtonPrefab;
+
+    [SerializeField] private GameObject checkpointPanel;
+    [SerializeField] private Transform checkpointListParent;
+    [SerializeField] private GameObject checkpointButtonPrefab;
     
     private HealthManager healthManager;
 
@@ -88,4 +92,5 @@ public class UIManager : MonoBehaviour
     {
         GameManager.Instance.LoadLastCheckpoint(saveFile); // Seçilen dosyayı yükle
     }
+    
 }
