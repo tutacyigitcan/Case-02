@@ -347,30 +347,6 @@ public class GameManager : MonoBehaviour
         }
     }
     
-    
-    // Oyuncu verilerini kaydeder
-    public void SavePlayerData()
-    {
-        SaveSystem.SaveCheckpoint("LastCheckPoint", SceneName, PlayerPosition, Health, Inventory, StoryProgress);
-    }
-
-    // Oyuncu verilerini yükler
-    public void LoadPlayerData()
-    {
-        PlayerData data = SaveSystem.LoadCheckpoint("LastCheckPoint");
-        if (data != null)
-        {
-            PlayerPosition = new Vector3(data.position[0], data.position[1], data.position[2]);
-            Health = data.health > 0 ? data.health : maxLives;
-            Inventory = new List<string>(data.inventory);
-            StoryProgress = data.storyProgress;
-        }
-        else
-        {
-            Debug.LogWarning("Oyuncu verisi yüklenemedi.");
-        }
-    }
-    
     public void SetCheckPoints()
     {
         GameObject checkPointContainer = GameObject.Find("CheckPointContainer");

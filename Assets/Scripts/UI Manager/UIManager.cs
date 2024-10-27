@@ -47,8 +47,6 @@ public class UIManager : MonoBehaviour
 
     public void UpdateHearts(int currentHealth)
     {
-       // int currentLives = GameManager.Instance.Health;
-
         for (int i = 0; i < heartIcons.Count; i++)
         {
             heartIcons[i].enabled = i < currentHealth;
@@ -64,18 +62,15 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator ShowNotification()
     {
-        checkpointNotification.gameObject.SetActive(true); // UI açılır
+        checkpointNotification.gameObject.SetActive(true);
         checkpointNotification.text = "Checkpoint'e Ulaşıldı! Oyun Kaydedildi.";
-        yield return new WaitForSeconds(2f); // 2 saniye göster
-        checkpointNotification.gameObject.SetActive(false); // UI kapanır
+        yield return new WaitForSeconds(2f);
+        checkpointNotification.gameObject.SetActive(false);
     }
     
     public void LoadSaveFiles()
     {
-        // Var olan save dosyalarını al
         List<string> saveFiles = SaveSystem.GetAllSaveFiles();
-
-        // Listeyi temizle
         foreach (Transform child in saveFileListParent)
         {
             Destroy(child.gameObject);
@@ -92,7 +87,7 @@ public class UIManager : MonoBehaviour
 
     private void OnSaveFileClicked(string saveFile)
     {
-        GameManager.Instance.LoadLastCheckpoint(saveFile); // Seçilen dosyayı yükle
+        GameManager.Instance.LoadLastCheckpoint(saveFile);
     }
     
     public void TeleportUI(List<Transform> activeCheckpoints)

@@ -27,31 +27,4 @@ public class PlayerData
         this.storyProgress = storyProgress;
         this.saveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
     }
-
-    #region MyRegion
-
-    /*
-  public static PlayerData Instance { get; private set; }
-  public string PlayerName { get; set; } = "Player";
-  public Vector3 PlayerPosition { get; set; } = Vector3.zero;
-  public int CurrentLives { get; set; } = 5;
-  public int Coins { get; set; } = 0;
-  public int Experience { get; set; } = 0;
-
-  private PlayerData() {}
-
-  private void Awake()
-  {
-      if (Instance == null)
-      {
-          Instance = this;
-          DontDestroyOnLoad(gameObject);
-      }
-      else
-      {
-          Destroy(gameObject);
-      }
-  }*/
-
-    #endregion
 }
