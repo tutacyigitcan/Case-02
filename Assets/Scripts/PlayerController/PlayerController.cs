@@ -54,6 +54,11 @@ public class PlayerController : CharacterBase
             isJumping = false;
             animatorManager.SetIdleAnimation();
         }
+        
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            UIManager.Instance.TeleportUI(GameManager.Instance.GetActiveCheckpoints());
+        }
     }
 
     public void HandleInput()

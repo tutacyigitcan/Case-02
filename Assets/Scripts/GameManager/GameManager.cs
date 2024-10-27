@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     private Dictionary<string, int> passedCheckpointsPerScene = new Dictionary<string, int>();
     private HashSet<string> activatedCheckpoints = new HashSet<string>();
     
+    private List<Transform> activeCheckpoints = new List<Transform>();
     
     [Header("Player Data")]
     public int maxLives = 5;
@@ -252,15 +253,50 @@ public class GameManager : MonoBehaviour
         }
         return false;
     }
-    
-    public void DisablePassedCheckpoints(float playerPosition) {
-        foreach (var checkpoint in checkpoints) {
-            if (checkpoint.transform.position.x <= playerPosition) {
+
+    public void DisablePassedCheckpoints(float playerPosition)
+    {
+        foreach (var checkpoint in checkpoints)
+        {
+            if (checkpoint.transform.position.x <= playerPosition)
+            {
                 var collider = checkpoint.GetComponent<BoxCollider2D>();
-                if (collider != null) {
+                if (collider != null && collider.enabled)
+                {
                     collider.enabled = false;
+                    AddActiveCheckpoint(checkpoint.transform);
+                    Debug.Log($"Checkpoint devre dışı bırakıldı ve eklendi: {checkpoint.name}");
                 }
             }
+        }
+    }
+    
+    // Aktif checkpoint ekleme
+    public void AddActiveCheckpoint(Transform checkpoint)
+    {
+        if (!activeCheckpoints.Contains(checkpoint))
+        {
+            activeCheckpoints.Add(checkpoint);
+        }  
+        else
+        {
+            Debug.Log($"Checkpoint zaten listede: {checkpoint.name}");
+        }
+    }
+    
+    // Aktif checkpointleri döndür
+    public List<Transform> GetActiveCheckpoints()
+    {
+        return activeCheckpoints;
+    }
+    
+    // Oyuncuyu seçilen checkpoint'e ışınla
+    public void TeleportToCheckpoint(Transform checkpoint)
+    {
+        if (playerInstance != null)
+        {
+            playerInstance.transform.position = checkpoint.position;
+            Debug.Log($"Oyuncu {checkpoint.name} checkpoint'ine ışınlandı.");
         }
     }
 

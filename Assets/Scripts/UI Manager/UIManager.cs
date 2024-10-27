@@ -14,8 +14,8 @@ public class UIManager : MonoBehaviour
     public Transform saveFileListParent;
     public GameObject saveFileButtonPrefab;
 
-    [SerializeField] private GameObject checkpointPanel;
-    [SerializeField] private Transform checkpointListParent;
+    [SerializeField] private GameObject teleportPanel;
+    [SerializeField] private Transform teleportListParent;
     [SerializeField] private GameObject checkpointButtonPrefab;
     
     private HealthManager healthManager;
@@ -91,6 +91,33 @@ public class UIManager : MonoBehaviour
     private void OnSaveFileClicked(string saveFile)
     {
         GameManager.Instance.LoadLastCheckpoint(saveFile); // Seçilen dosyayı yükle
+    }
+    
+    public void TeleportUI(List<Transform> activeCheckpoints)
+    {
+        teleportPanel.SetActive(true);
+        
+        foreach (Transform child in teleportListParent)
+        {
+            Destroy(child.gameObject);
+        }
+        Debug.Log($"Aktif checkpoint sayısı: {activeCheckpoints.Count}");
+        foreach (Transform checkpoint in activeCheckpoints)
+        {
+            GameObject button = Instantiate(checkpointButtonPrefab, teleportListParent);
+            button.GetComponentInChildren<Text>().text = checkpoint.name;  // Buton ismini ata
+            
+            button.GetComponent<Button>().onClick.AddListener(() => {
+                GameManager.Instance.TeleportToCheckpoint(checkpoint);  // Oyuncuyu ışınla
+                teleportPanel.SetActive(false);  // Paneli kapat
+                Debug.Log($"Tıklanan checkpoint: {checkpoint.name}");
+            });
+        }
+    }
+    
+    public void HideTeleportUI()
+    {
+        teleportPanel.SetActive(false);
     }
     
 }
