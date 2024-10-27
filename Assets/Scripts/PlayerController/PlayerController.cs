@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -57,7 +58,8 @@ public class PlayerController : CharacterBase
         
         if (Input.GetKeyDown(KeyCode.C))
         {
-            UIManager.Instance.TeleportUI(GameManager.Instance.GetActiveCheckpoints());
+            List<Transform> activeCheckpoints = GameManager.Instance.GetActiveCheckpoints();
+            UIManager.Instance.TeleportUI(activeCheckpoints); // UI'yi güncelle
         }
     }
 

@@ -24,6 +24,14 @@ public class MainMenuUI : MonoBehaviour
     {
         SaveSystem.DeleteAllSaves();
         Debug.Log("Tüm kayıtlar silindi.");
+        
+        LoadSaveFiles();
+    }
+    
+    public void OnBackButtonClicked()
+    {
+        checkpointPanel.SetActive(false); // Paneli kapat
+        Debug.Log("Checkpoint paneli kapatıldı.");
     }
 
 

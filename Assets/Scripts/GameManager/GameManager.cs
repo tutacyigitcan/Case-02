@@ -142,6 +142,7 @@ public class GameManager : MonoBehaviour
                 playerInstance.transform.position = Vector3.zero;
             }
         }
+        UIManager.Instance.TeleportUI(GetActiveCheckpoints());
     }
 
     // Oyuncu, canvas ve kamera prefablarını yaratır
@@ -339,11 +340,6 @@ public class GameManager : MonoBehaviour
         {
             playerInstance.transform.position = respawnPoint.position;
             Debug.Log("Oyuncu respawn noktasından doğdu.");
-        }
-        else
-        {
-            playerInstance.transform.position = Vector3.zero;
-            Debug.LogWarning("Checkpoint veya respawn noktası bulunamadı.");
         }
     }
     

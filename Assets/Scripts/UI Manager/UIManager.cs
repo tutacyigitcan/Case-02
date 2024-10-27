@@ -92,12 +92,12 @@ public class UIManager : MonoBehaviour
     
     public void TeleportUI(List<Transform> activeCheckpoints)
     {
-        teleportPanel.SetActive(true);
-        
         foreach (Transform child in teleportListParent)
         {
             Destroy(child.gameObject);
         }
+        teleportPanel.SetActive(true);
+        
         Debug.Log($"Aktif checkpoint sayısı: {activeCheckpoints.Count}");
         foreach (Transform checkpoint in activeCheckpoints)
         {
