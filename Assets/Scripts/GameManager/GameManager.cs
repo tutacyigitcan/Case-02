@@ -169,21 +169,9 @@ public class GameManager : MonoBehaviour
     
     public void RespawnPlayer()
     {
-        foreach (var checkpoint in checkpoints)
-        {
-            Debug.Log(checkpoint + "TESTER CHECK");
-            Debug.Log(playerPrefab.transform.position);
-                
-            if (checkpoint.transform.position.x <= currentCheckpoint.position.x)
-            {
-                checkpoint.GetComponent<BoxCollider2D>().enabled = false;
-                Debug.Log(checkpoint + ("girdi"));
-            }
-        }
-        
         if (playerInstance != null && currentCheckpoint != null)
         {
-          
+            DisablePassedCheckpoints(currentCheckpoint.position.x);
             playerInstance.transform.position = currentCheckpoint.position;
             Debug.Log("Oyuncu checkpoint'ten doğdu.");
         }
@@ -194,11 +182,13 @@ public class GameManager : MonoBehaviour
         
         if (currentCheckpoint != null)  // Eğer checkpoint varsa buradan başla
         {
+            DisablePassedCheckpoints(currentCheckpoint.position.x);
             playerInstance.transform.position = currentCheckpoint.position;
             Debug.Log("Oyuncu checkpoint'ten doğdu.");
         }
         else if (respawnPoint != null)  // Checkpoint yoksa respawn noktasından başla
         {
+            DisablePassedCheckpoints(respawnPoint.position.x);
             playerInstance.transform.position = respawnPoint.position;
             Debug.Log("Oyuncu respawn noktasından doğdu.");
         }
@@ -251,29 +241,28 @@ public class GameManager : MonoBehaviour
         PlayerData data = SaveSystem.LoadCheckpoint(checkpointName);
         if (data != null && playerInstance != null)
         {
-            
-            foreach (var checkpoint in checkpoints)
-            {
-                Debug.Log(checkpoint.transform.position + "LoadLastCheckpoint TESTER CHECK");
-                Debug.Log(data.position[0]+"LoadLastCheckpoint TESTER");
-                
-                if (checkpoint.transform.position.x <= data.position[0])
-                {
-                    checkpoint.GetComponent<BoxCollider2D>().enabled = false;
-                    Debug.Log(checkpoint + ("LoadLastCheckpoint girdi"));
-                }
-            }
-            
             PlayerPosition = new Vector3(data.position[0], data.position[1], data.position[2]);
             Health = data.health;
             Inventory = new List<string>(data.inventory);
             StoryProgress = data.storyProgress;
+            DisablePassedCheckpoints(PlayerPosition.x);
 
             playerInstance.transform.position = PlayerPosition;
             Debug.Log($"Checkpoint'ten yüklendi: {checkpointName}, Pozisyon: {PlayerPosition}");
             return true;
         }
         return false;
+    }
+    
+    public void DisablePassedCheckpoints(float playerPosition) {
+        foreach (var checkpoint in checkpoints) {
+            if (checkpoint.transform.position.x <= playerPosition) {
+                var collider = checkpoint.GetComponent<BoxCollider2D>();
+                if (collider != null) {
+                    collider.enabled = false;
+                }
+            }
+        }
     }
 
     // Yeni checkpoint'i kaydeder
@@ -300,19 +289,6 @@ public class GameManager : MonoBehaviour
     // Oyuncuyu başlatır veya checkpoint'e yerleştirir
     public void InitializePlayer()
     {
-        Debug.Log(checkpoints+ "TESTER CHECK");
-        foreach (var checkpoint in checkpoints)
-        {
-            
-            Debug.Log(playerPrefab.transform.position);
-                
-            if (checkpoint.transform.position.x <= currentCheckpoint.position.x)
-            {
-                checkpoint.GetComponent<BoxCollider2D>().enabled = false;
-                Debug.Log(checkpoint + ("girdi"));
-            }
-        }
-        
         if (playerInstance == null)
         {
             playerInstance = Instantiate(playerPrefab);

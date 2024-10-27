@@ -4,17 +4,15 @@ using UnityEngine;
 public class Checkpoint : MonoBehaviour
 {
     [SerializeField] private string checkpointName;
-    private bool isActivated = false;
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && !isActivated)
+        if (other.CompareTag("Player"))
         {
             Debug.Log($"Checkpoint'e ulaşıldı: {checkpointName}");
             GameManager.Instance.SetCurrentCheckpoint(transform); // Checkpoint'i ata
-            
             GameManager.Instance.CheckpointPassed();
             UIManager.Instance.ShowCheckpointNotification();
-            isActivated = true; // Artık bu checkpoint'e tekrar kaydetme yapılmaz
+            GetComponent<BoxCollider2D>().enabled = false;
         }
         else
         {
