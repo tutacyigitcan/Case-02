@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -59,6 +60,7 @@ public class UIManager : MonoBehaviour
     {
         StartCoroutine(ShowNotification());
     }
+    
 
     private IEnumerator ShowNotification()
     {

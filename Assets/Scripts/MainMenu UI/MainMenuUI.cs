@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class MainMenuUI : MonoBehaviour
 {
@@ -12,6 +13,11 @@ public class MainMenuUI : MonoBehaviour
     {
         checkpointPanel.SetActive(true);
         LoadSaveFiles();
+    }
+
+    public void LoadGame(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
     }
 
     public void saveDelete()
