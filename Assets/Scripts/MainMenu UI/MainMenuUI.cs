@@ -8,6 +8,72 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject checkpointPanel;
     [SerializeField] private Transform checkpointListParent; 
     [SerializeField] private GameObject saveFileButtonPrefab;
+    [SerializeField] private Button startGameButton;
+    [SerializeField] private Button continueButton;
+    
+    private void Start()
+    {
+        SetupMenu();
+    }
+    
+    private void SetupMenu()
+    {
+        List<string> saveFiles = SaveSystem.GetAllSaveFiles();
+        
+        if (saveFiles.Count > 0)
+        {
+            continueButton.gameObject.SetActive(true);
+            startGameButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            continueButton.gameObject.SetActive(false);
+            startGameButton.gameObject.SetActive(true);
+        }
+    }
+    
+    public void OnStartGameButtonClicked()
+    {
+        List<string> saveFiles = SaveSystem.GetAllSaveFiles();
+        if (saveFiles.Count > 0)
+        {
+            bool userConfirmed = ConfirmDeleteSave();  // Bu metot uyarıyı gösterir ve onay alır.
+            if (!userConfirmed)
+            {
+                Debug.Log("Kullanıcı yeni oyuna başlamayı iptal etti.");
+                return;
+            }
+
+            SaveSystem.DeleteAllSaves();
+            Debug.Log("Mevcut kayıtlar silindi. Oyun sıfırdan başlıyor.");
+        }
+        SceneManager.LoadScene("GameScene 01");
+    }
+    
+    private bool ConfirmDeleteSave()
+    {
+        return UnityEditor.EditorUtility.DisplayDialog(
+            "Kayıtları Sil", 
+            "Yeni oyuna başlarsanız mevcut kayıtlar silinecek. Devam etmek istiyor musunuz?", 
+            "Evet", "Hayır"
+        );
+    }
+    
+    public void OnContinueButtonClicked()
+    {
+        // Son checkpoint'i yükle
+        PlayerData lastCheckpoint = SaveSystem.LoadCheckpoint("LastCheckpoint");
+        if (lastCheckpoint != null)
+        {
+            Debug.Log("Son kayıt yükleniyor: " + lastCheckpoint.sceneName);
+            GameManager.Instance.LoadScene(lastCheckpoint.sceneName);
+        }
+        else
+        {
+            Debug.LogWarning("Kayıt bulunamadı! Yeni oyuna başlanıyor.");
+            OnStartGameButtonClicked();
+        }
+    }
     
     public void OnLoadButtonClicked()
     {

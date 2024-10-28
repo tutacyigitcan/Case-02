@@ -216,7 +216,16 @@ public class GameManager : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0.1f);  // Yükleme sonrası kısa bekleme
-        InitializePlayer();  // Oyuncuyu doğru konuma yerleştir
+       // InitializePlayer();  // Oyuncuyu doğru konuma yerleştir
+       // Son checkpoint'i yükleme
+       PlayerData data = SaveSystem.LoadCheckpoint("LastCheckpoint");
+       if (data != null && playerInstance != null)
+       {
+           playerInstance.transform.position = new Vector3(
+               data.position[0], data.position[1], data.position[2]
+           );
+           Debug.Log("Son checkpoint pozisyonu yüklendi.");
+       }
     }
     
     public Transform GetRespawnPointForCurrentScene()
